@@ -36,6 +36,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.7.10",
     "@types/node": "^24.3.0",
     "prisma": "^6.14.0",
     "tsx": "^4.20.4",
