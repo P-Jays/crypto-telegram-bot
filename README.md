@@ -41,6 +41,28 @@ A Telegram bot that helps users detect **red flags** and understand **token safe
 
 ---
 
+## Env Setup
+
+```
+# Telegram
+BOT_TOKEN=123456789:ABCDEF...
+
+# AI (at least one)
+OPENAI_API_KEY=sk-...
+GOOGLE_API_KEY=AIza...
+
+# Database
+DATABASE_URL=postgresql://USER:PASS@localhost:5432/crypto_bot
+
+# Mode: polling (local dev) or webhook (server)
+BOT_MODE=polling
+# Public URL only required for webhook mode
+PUBLIC_URL=https://<your-ngrok-or-domain>
+PORT=5555
+HOST=0.0.0.0
+
+```
+
 ## 🚀 Commands Overview
 
 | Command            | Description                                  |
