@@ -1,0 +1,48 @@
+// prisma/schema.prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+model ChatSetting {
+  id           Int      @id @default(autoincrement())
+  chatId       BigInt   @unique
+  defaultChain String?  // "ethereum" | "bsc" | ...
+  provider     String?  // "auto" | "openai" | "gemini"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model QueryLog {
+  id          BigInt   @id @default(autoincrement())
+  chatId      BigInt
+  type        String   // "price" | "analyze" | "freeform" | "error"
+  input       String
+  outcome     String?  // "ok" | "fail" | custom note
+  latencyMs   Int?
+  provider    String?  // which AI provider used
+  createdAt   DateTime @default(now())
+  // Optional: link to cached row
+  cacheKey    String?  @db.Text
+}
+
+model PriceCache {
+  key         String   @id         // e.g. "cg:symbol:btc"
+  payload     Json
+  ttlAt       DateTime             // expiry timestamp
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model DexCache {
+  key         String   @id         // e.g. "dex:search:pepe:5"
+  payload     Json
+  ttlAt       DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
