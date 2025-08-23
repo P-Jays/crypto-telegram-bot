@@ -1,140 +1,254 @@
-# Crypto Telegram Bot
+# 🛡️ Crypto Safety Telegram Bot
 
-A Telegram bot that provides cryptocurrency price information and market insights using CoinGecko API and AI-powered analysis.
+[![TypeScript](https://img.shields.io/badge/TS-TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![LangChain](https://img.shields.io/badge/LangChain-AI-yellow?logo=OpenAI&logoColor=black)](https://js.langchain.com)
+[![Telegraf](https://img.shields.io/badge/Telegram-Bot-0088cc?logo=telegram)](https://github.com/telegraf/telegraf)
+[![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma)](https://www.prisma.io/)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-## Features
+A Telegram bot that helps users detect **red flags** and understand **token safety** instantly from just a symbol or contract address.
 
-- Get real-time cryptocurrency prices and market data
-- AI-powered market insights using OpenAI
-- DEX data integration via DexScreener API
-- RESTful API endpoints for token analysis
+---
 
-## Setup
+## 🧠 What Can This Bot Do?
 
-### 1. Install Dependencies
+| Input Type         | Example           | Result                                             |
+|--------------------|-------------------|----------------------------------------------------|
+| `/price BTC`       | BTC               | Market data + liquidity score                      |
+| `/analyze <0x…>`   | Contract address  | AI analysis + safety score                         |
+| Freeform text      | "price of pepe"   | Symbol extraction → price → analyze button         |
+| Paste contract     | `0xABC…`          | Auto analyze + explanation                         |
 
-```bash
+---
+
+## 📸 Screenshots
+
+| Analyze Button | AI Result |
+|----------------|-----------|
+| ![price-analyze](docs/screenshot-price-analyze.png) | ![ai-analysis](docs/screenshot-ai-analysis.png) |
+
+> 📝 Add your screenshots in `docs/`.
+
+---
+
+## ⚙️ Tech Stack
+
+- **Node.js + TypeScript**
+- **Telegraf** (Telegram Bot API)
+- **LangChain** for AI summarization
+- **OpenAI / Gemini** — configurable
+- **CoinGecko + Dexscreener** for live token data
+- **Fastify** (for webhook + REST)
+- **Prisma + PostgreSQL** for logs, settings, caching
+
+---
+
+## 🚀 Commands Overview
+
+| Command            | Description                                  |
+|--------------------|----------------------------------------------|
+| `/start`           | Intro message                                |
+| `/help`            | Show all commands                            |
+| `/price <symbol>`  | Get price + liquidity + market stats         |
+| `/analyze <0x…>`   | Analyze token safety via AI                  |
+| `/settings`        | Show current chat preferences                |
+| `/setchain <eth>`  | Set preferred chain (ETH, BSC, etc)          |
+| `/provider <...>`  | Set AI: `openai`, `gemini`, or `auto`        |
+| `/logs`            | Show recent queries by this user             |
+
+---
+
+## 🧪 Freeform Handler
+
+Supports raw inputs like:
+
+- `btc`, `pepe`, `solana`
+- `$DOGE`, `$pepe`, `price of eth`
+- `0x…` contract — direct analyze
+
+Uses:
+- Symbol resolver
+- On-chain pair matcher
+- Interactive inline buttons
+- AI summarizer
+
+---
+
+## 🧠 LangChain Prompt Logic
+
+```
+You are an analyst. Explain the safety of a crypto token for a retail user.
+Be neutral and specific. Use these metrics:
+- Price: $…
+- Liquidity: $…
+- Volume (24h): $…
+- FDV: $…
+- Buys/Sells: 100/50
+Return a JSON:
+{
+  score: …,
+  explanation: …
+}
+```
+
+## 🧪 How to Run Locally
+
+> Requires: `Node.js`, `npm`, `PostgreSQL`, `.env` file.
+
+1. **Install deps**
+
+```
 npm install
 ```
+2. Set up your .env
 
-### 2. Environment Variables
+✅ Commit a .env.example (no secrets) for future contributors.
 
-Create a `.env` file in the root directory with the following variables:
 
-```env
-# Telegram Bot Token (get from @BotFather)
-TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
+3. Generate Prisma client & migrate
+```
+npx prisma generate
+npx prisma migrate dev --name init
+npx prisma studio // optional explore DB use GUI
 
-# OpenAI API Key (for AI insights)
-OPENAI_API_KEY=your_openai_api_key_here
-
-# Database URL (if using Prisma)
-DATABASE_URL="postgresql://username:password@localhost:5432/crypto_bot"
 ```
 
-### 3. Get Telegram Bot Token
-
-1. Message [@BotFather](https://t.me/botfather) on Telegram
-2. Send `/newbot` command
-3. Follow the instructions to create your bot
-4. Copy the token and add it to your `.env` file
-
-### 4. Get OpenAI API Key
-
-1. Go to [OpenAI Platform](https://platform.openai.com/)
-2. Create an account or sign in
-3. Navigate to API Keys section
-4. Create a new API key
-5. Add it to your `.env` file
-
-## Usage
-
-### Start the Telegram Bot
-
-```bash
+4. Start bot in dev mode
+```
 npm run dev:bot
+
 ```
-
-### Start the REST API Server
-
-```bash
+5. Start server (Fastify webhook mode)
+```
 npm run dev:server
 ```
 
-### Build for Production
+### Webhook Mode (for deploy or ngrok)
+```
+ngrok http 5555
+```
 
-```bash
+### Then set in .env:
+```
+BOT_MODE=webhook
+PUBLIC_URL=https://abc123.ngrok.io
+```
+
+### And run:
+```
+npm run api:dev
+```
+
+## REST API Endpoints
+
+| Endpoint           | Description              |
+| ------------------ | ------------------------ |
+| `GET /health`      | Check bot is alive       |
+| `GET /token/:addr` | Trigger analyze from API |
+
+
+## Scripts 
+
+| Script            | Description                            |
+| ----------------- | -------------------------------------- |
+| `dev:bot`         | Build and run bot directly             |
+| `dev:server`      | Run Fastify webhook server             |
+| `build`           | Compile TypeScript and generate Prisma |
+| `studio`          | Launch Prisma Studio (GUI for DB)      |
+| `prisma:generate` | Regenerate Prisma client               |
+| `type-check`      | Check TypeScript types                 |
+
+## Database model
+
+```
+model QueryLog {
+  id        BigInt   @id @default(autoincrement())
+  chatId    BigInt
+  type      String
+  input     String
+  outcome   String?
+  latencyMs Int?
+  provider  String?
+  cacheKey  String?  @db.Text
+  createdAt DateTime @default(now())
+}
+
+model PriceCache {
+  key       String   @id
+  payload   Json
+  updatedAt DateTime @updatedAt
+}
+
+model DexCache {
+  key       String   @id
+  payload   Json
+  updatedAt DateTime @updatedAt
+}
+
+model ChatSetting {
+  chatId       BigInt   @id
+  defaultChain String?
+  provider     String?
+  updatedAt    DateTime @updatedAt
+}
+
+```
+## Folder Structure
+
+.
+├── src/
+│   ├── bot/              → Telegram bot handlers
+│   ├── llm/              → LangChain prompt logic
+│   ├── utils/            → Logging, caching, token parsing
+│   ├── server.ts         → Fastify webhook setup
+│   └── index.ts          → Bot entrypoint
+├── prisma/
+│   ├── schema.prisma     → DB schema (query logs, cache)
+├── dist/                 → Compiled JS
+├── .env
+├── package.json
+└── README.md
+
+# Security Notes
+
+Retry on CoinGecko rate limits (429 / 5xx).
+Input sanitization for commands.
+Short cache TTLs (45s) to reduce spam.
+Prisma logs inputs, errors, and outcomes in queryLog.
+
+# Deployment tips
+
+| Platform | Guide                                    |
+| -------- | ---------------------------------------- |
+| Railway  | Add secrets, set port, deploy            |
+| Render   | Use Web Service mode + PostgreSQL Add-on |
+| Fly.io   | Fastify-friendly + persistent volumes    |
+
+```
+npx prisma migrate deploy
+
+```
+start production
+```
 npm run build
-npm start
-```
-
-## API Endpoints
-
-### GET /token/:address
-
-Get comprehensive token analysis including DEX data, CoinGecko data, and AI insights.
-
-Example:
-```bash
-curl http://localhost:3000/token/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984
-```
-
-## Telegram Bot Commands
-
-- `/start` - Welcome message and instructions
-- `/help` - Show available commands
-- `/price <symbol>` - Get cryptocurrency price and market data
-
-Examples:
-- `/price BTC`
-- `/price ETH`
-- `/price DOGE`
-
-## Troubleshooting
-
-### Common Issues
-
-1. **"TELEGRAM_BOT_TOKEN is not defined"**
-   - Make sure you've created a `.env` file with your bot token
-   - Verify the token is correct and active
-
-2. **"OpenAI API key not found"**
-   - Add your OpenAI API key to the `.env` file
-   - Ensure you have sufficient credits in your OpenAI account
-
-3. **Import/Module errors**
-   - Make sure all dependencies are installed: `npm install`
-   - Check that TypeScript is properly configured
-
-4. **API rate limits**
-   - CoinGecko has rate limits for free tier
-   - Consider upgrading to paid tier for higher limits
-
-### Development
-
-- The bot uses TypeScript with ES modules
-- Make sure `ts-node` is installed for development
-- Use `npm run dev:bot` for bot development
-- Use `npm run dev:server` for API development
-
-## Project Structure
+npm run start
 
 ```
-src/
-├── api/           # REST API routes
-├── bot/           # Telegram bot logic
-├── services/      # External API integrations
-│   ├── ai.ts      # OpenAI integration
-│   ├── coingecko.ts # CoinGecko API
-│   └── dex.ts     # DexScreener API
-└── server.ts      # Fastify server setup
-```
 
-## Dependencies
+# TODO / Ideas
 
-- **telegraf** - Telegram bot framework
-- **fastify** - Web framework for API
-- **axios** - HTTP client
-- **openai** - OpenAI API client
-- **typescript** - Type safety
-- **ts-node** - TypeScript execution
+- Add unit tests with Jest or Vitest.
+- Dockerize for easy deployment.
+- Add admin dashboard (see query logs).
+- AI-based risk scoring engine.
+- User settings (preferred chains, alerts).
+
+# Contributing
+
+Want to improve this bot or adapt it for your own project? Feel free to fork and modify it. PRs welcome!
+
+# Demo
+
+# Author
+
+Built with ❤️ by **[Kelvin Prajnawi](www.linkedin.com/in/kelvin-prajnawi-7b5851177)**
