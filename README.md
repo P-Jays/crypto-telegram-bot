@@ -4,7 +4,6 @@
 [![LangChain](https://img.shields.io/badge/LangChain-AI-yellow?logo=OpenAI&logoColor=black)](https://js.langchain.com)
 [![Telegraf](https://img.shields.io/badge/Telegram-Bot-0088cc?logo=telegram)](https://github.com/telegraf/telegraf)
 [![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma)](https://www.prisma.io/)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 A Telegram bot that helps users detect **red flags** and understand **token safety** instantly from just a symbol or contract address.
 
