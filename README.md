@@ -213,9 +213,13 @@ model ChatSetting {
 .
 ├── src/
 │   ├── bot/              → Telegram bot handlers
-│   ├── llm/              → LangChain prompt logic
+│   ├── service/          → LangChain prompt, DEX, CoinGecko logic
 │   ├── utils/            → Logging, caching, token parsing
 │   ├── server.ts         → Fastify webhook setup
+│   ├── db/               
+│   ├── middleware/       
+│   ├── api/              
+│   ├── state/             
 │   └── index.ts          → Bot entrypoint
 ├── prisma/
 │   ├── schema.prisma     → DB schema (query logs, cache)
