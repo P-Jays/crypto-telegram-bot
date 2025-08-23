@@ -27,7 +27,6 @@ A Telegram bot that helps users detect **red flags** and understand **token safe
 |----------------|-----------|
 | ![price-analyze](docs/screenshot-price-analyze.png) | ![ai-analysis](docs/screenshot-ai-analysis.png) |
 
-> 📝 Add your screenshots in `docs/`.
 
 ---
 
@@ -194,7 +193,7 @@ model ChatSetting {
 
 ```
 ## Folder Structure
-
+```
 .
 ├── src/
 │   ├── bot/              → Telegram bot handlers
@@ -208,6 +207,7 @@ model ChatSetting {
 ├── .env
 ├── package.json
 └── README.md
+```
 
 # Security Notes
 
