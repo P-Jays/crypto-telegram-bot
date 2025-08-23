@@ -137,6 +137,23 @@ PUBLIC_URL=https://abc123.ngrok.io
 npm run api:dev
 ```
 
+# APIs Used
+
+### CoinGecko
+```
+/search → resolve IDs by symbol/name
+/coins/markets → price, market cap, volume
+/coins/{id} → extra details (liquidity_score fallback, etc.)
+```
+### Dexscreener
+```
+/latest/dex/tokens/{contract} and related search endpoints → pairs, price, liquidity, FDV, txns
+```
+### AI Providers (via LangChain)
+1. OpenAI (Chat Completions)
+2. Google Gemini (Generative Language API)
+3. Fallback logic: try OpenAI → fallback to Gemini when configured.
+
 ## REST API Endpoints
 
 | Endpoint           | Description              |
