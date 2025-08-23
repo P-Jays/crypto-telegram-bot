@@ -13,20 +13,27 @@
     "build": "prisma generate && tsc",
     "dev:bot": "prisma generate && tsc && node dist/bot/index.js",
     "dev:server": "prisma generate && tsc && node dist/server.js",
-    "studio": "prisma studio"
+    "studio": "prisma studio",
+    "dev:api": "tsx src/server.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "@fastify/helmet": "^13.0.1",
     "@google/generative-ai": "^0.24.1",
+    "@langchain/google-genai": "^0.2.16",
+    "@langchain/openai": "^0.6.9",
     "@prisma/client": "^6.14.0",
     "axios": "^1.11.0",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.2.1",
     "fastify": "^5.5.0",
     "langchain": "^0.3.31",
     "openai": "^5.13.1",
-    "telegraf": "^4.16.3"
+    "telegraf": "^4.16.3",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",
