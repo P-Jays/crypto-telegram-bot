@@ -29,6 +29,11 @@ const fmtUSD = (n?: number) =>
     : "N/A";
 const mdEscape = (s: string) =>
   String(s).replace(/[_*[\]()~`>#+\-=|{}.!]/g, "\\$&");
+function escapeMd(text: string) {
+  return text.replace(/([_*[\]()~`>#+\-=|{}.!])/g, "\\$1");
+}
+const html = (s: string) =>
+  String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 async function typing<T>(ctx: any, fn: () => Promise<T>): Promise<T> {
   try {
@@ -659,7 +664,7 @@ Volume 24h: ${fmtUSD(vol24)}
 FDV: ${fmtUSD(fdv)}`;
 
   const insight = `🧠 *AI Insight* (via ${ai.provider})
-${mdEscape(ai.explanation)}
+${html(ai.explanation)}
 
 🛡 *Safety Score*: ${ai.score}%`;
 
@@ -671,7 +676,7 @@ ${mdEscape(ai.explanation)}
     }`;
 
   await ctx.reply(`${header}\n\n${insight}`, {
-    parse_mode: "Markdown",
+    parse_mode: "HTML",
     ...Markup.inlineKeyboard([
       [
         Markup.button.callback("🔄 Refresh", `ANALYZE_ADDR:${address}`),
