@@ -697,9 +697,6 @@ async function startBot() {
   // Polling mode (dev/local)
   await bot.launch();
   console.log("✅ Bot started (polling)");
-  (async () => {
-    await bot.launch();
-  })();
 
   // Enable graceful stop
   process.once("SIGINT", () => bot.stop("SIGINT"));
