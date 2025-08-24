@@ -26,6 +26,18 @@ function getPort() {
 
 async function buildServer(): Promise<FastifyInstance> {
   const app = Fastify({ logger: true });
+  app.addContentTypeParser(
+    "application/json",
+    { parseAs: "string" },
+    function (req, body, done) {
+      try {
+        const json = JSON.parse(body.toString());
+        done(null, json);
+      } catch (err) {
+        done(err as Error, undefined);
+      }
+    }
+  );
 
   // Register plugins INSIDE async function (no top-level await in CJS)
   await app.register(cors, { origin: true });
