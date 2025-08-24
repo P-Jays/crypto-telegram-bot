@@ -21,6 +21,7 @@
   "license": "ISC",
   "dependencies": {
     "@fastify/cors": "^11.1.0",
+    "@fastify/express": "^4.0.2",
     "@fastify/helmet": "^13.0.1",
     "@google/generative-ai": "^0.24.1",
     "@langchain/google-genai": "^0.2.16",

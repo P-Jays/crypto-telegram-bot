@@ -12,10 +12,7 @@ import { getCoinGeckoBySymbol } from "./services/coingecko";
 import { getDexByContract } from "./services/dexscreener";
 import { aiSafetyInsight } from "./services/ai";
 import { prisma } from "./db/client";
-
-// If bot is exported, uncomment this import.
-// Make sure src/bot/index.ts exports:  `export const bot = new Telegraf(...);`
-import { bot } from "./bot";
+import { bot } from "./bot/index";
 
 const isEvmAddress = (s: string) => /^0x[a-fA-F0-9]{40}$/.test(s);
 const fmtErr = (e: any) => (e?.message ? String(e.message) : "Internal error");
@@ -33,6 +30,7 @@ async function buildServer(): Promise<FastifyInstance> {
   // Register plugins INSIDE async function (no top-level await in CJS)
   await app.register(cors, { origin: true });
   await app.register(helmet);
+  await app.register(import("@fastify/express"));
 
   // --- health ---
   app.get("/health", async () => ({
